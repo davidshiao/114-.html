@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>114年資安稽核因應作為簡報</title>
+    <!-- 載入Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 載入Inter字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 使用 Noto Sans TC 作為中文字體，Inter 作為英數字體 */
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            /* 修正Tailwind CSS在行動裝置上的字體渲染 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* 讓卡片中的換行符號(\n)能正確顯示 */
+        .card-content {
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col">
+
+    <!-- 標頭 -->
+    <header class="bg-white shadow-md w-full">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+                    114年資安稽核 - 待改善事項因應作為
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- 導覽列 -->
+    <nav class="bg-gray-800 shadow-inner">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap justify-center gap-4">
+            <!-- 導覽按鈕 -->
+            <button id="btn-strategy" class="nav-button bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                策略面
+            </button>
+            <button id="btn-management" class_name="nav-button" class="nav-button bg-gray-500 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                管理面
+            </button>
+            <button id="btn-technical" class="nav-button bg-gray-500 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                技術面
+            </button>
+        </div>
+    </nav>
+
+    <!-- 內容區域 -->
+    <main class="flex-grow overflow-y-auto p-4 sm:p-8">
+        <div id="content-area" class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- 卡片將會動態插入此處 -->
+        </div>
+    </main>
+
+    <script>
+        // 模擬的CSV資料 (基於您提供的檔案片段)
+        const csvData = `構面,稽核發現 (待改善事項),因應作為 (考量資安科2人人力),預定辦理時程
+策略面,1. 核心業務僅列空氣品質監測，未涵蓋水質保護、大氣環境等。,"1. 立即邀集水質保護司、大氣環境司等相關業務單位，召開核心業務辨識會議。
+2. 會議確認後，將完整清單更新至「資通安全維護計畫」中。",115年1月31日
+策略面,2. 「環境教育終身學習網」保有大量個資，防護需求僅評為「普」等級。,"1. 立即依據「資通系統防護需求分級原則」，考量其個資數量與敏感性，重新評估「環境教育終身學習網」之防護等級。
+2. 如經評估需提升等級，將依新等級要求規劃後續防護措施。",114年11月30日
+策略面,3. 114年內部稽核計畫，僅涵蓋核心資通系統與個人電腦主機。,"1. 依稽核建議「逐年擴大」，修訂內部稽核計畫。
+2. 規劃以風險為基礎之3年期稽核循環，優先納入次要但重要之系統，確保逐年擴大稽核範圍。",115年1月31日
+管理面,1. 「空氣品質維護區管制平台」、網路印表機及IoT設備未納入盤點；使用者電腦數量不一致。,"1. 發函通知各單位，要求全面清點並回報所屬網路印表機及IoT設備。
+2. 主動盤點「空氣品質維護區管制平台」並納管。
+3. 透過資產管理系統與AD、HR資料進行交叉比對，釐清電腦數量不一致問題。
+4. 將上述資料統一匯入「資訊資產清冊」。",115年4月30日
+管理面,4. 資通系統總數減少，但未有系統下架核定佐證資料。,"1. 立即追溯112年至114年間下架之系統，補齊下架申請及核定佐證。
+2. 建立並落實「系統下架管理程序」，未來系統下架皆須檢附完整簽核文件。",114年12月31日
+管理面,5. 29家委外廠商，113年僅辦理3家稽核。,"1. 依稽核建議 ，依系統防護等級、是否處理個資等，對29家廠商進行風險分級(高/中/低)。
+2. 規劃「委外廠商分級查核機制」：高風險(如核心系統)每年實地稽核、中風險採書面稽核、低風險採自我檢核問卷。",115年1月31日
+技術面,1. 部分利害關係人聯絡資訊僅包含EMAIL，緊急時無法聯繫。,"1. 立即全面檢視資安事件通報聯繫清單。
+2. 更新所有利害關係人(含廠商、業務單位)聯絡方式，確保至少包含「手機號碼」及「代理人手機」。",114年11月30日
+技術面,3. 部分主機作業系統已停止支援(EOS)，並有中高風險漏洞未修補，僅列管無其他管控。,"1. 針對EOS主機，立即研擬汰換/升級計畫；若無法立即汰換，則導入「虛擬補丁」或加強「網路隔離」(如VLAN、防火牆嚴格存取)等補償性措施。
+2. 針對未修補之中高風險漏洞，要求廠商說明原因並立即修補。",115年1月31日
+技術面,8. 「愛環境資訊網」舊網址仍可連線且憑證已到期。,"1. 立即將「愛環境資訊網」舊網址下線，並移除DNS紀錄。
+2. (若有必要)設定301轉址，將舊網址流量導向新網站。",114年10月31日`;
+
+        /**
+         * 解析CSV資料字串
+         * @param {string} csv - 包含CSV資料的字串
+         * @returns {Array<Object>} - 解析後的物件陣列
+         */
+        function parseCSV(csv) {
+            const result = [];
+            // 分割每一行
+            const linesArr = csv.trim().split('\n');
+            // 取出標頭
+            const headersArr = linesArr.shift().split(',');
+            
+            let currentSection = '';
+            let buffer = []; // 用於處理跨行引號的緩衝區
+
+            for (const line of linesArr) {
+                buffer.push(line);
+                
+                // 計算緩衝區中引號的總數
+                const combinedLine = buffer.join('\n');
+                const quoteCount = (combinedLine.match(/"/g) || []).length;
+                
+                // 如果引號數量是偶數，代表這是一個完整的資料列
+                if (quoteCount % 2 === 0) {
+                    const fields = [];
+                    let currentField = '';
+                    let inQuotes = false;
+                    
+                    for (let i = 0; i < combinedLine.length; i++) {
+                        const char = combinedLine[i];
+                        if (char === '"') {
+                            if (inQuotes && combinedLine[i+1] === '"') {
+                                // 處理逸出的引號 ""
+                                currentField += '"';
+                                i++; // 跳過下一個引號
+                            } else {
+                                inQuotes = !inQuotes;
+                            }
+                        } else if (char === ',' && !inQuotes) {
+                            // 欄位結束
+                            fields.push(currentField.trim());
+                            currentField = '';
+                        } else {
+                            // 增加字元到目前欄位
+                            currentField += char;
+                        }
+                    }
+                    fields.push(currentField.trim()); // 推入最後一個欄位
+                    
+                    if (fields.length === 4) {
+                        // 處理「構面」欄位，如果為空，則沿用上一筆的資料
+                        if (fields[0]) {
+                            currentSection = fields[0];
+                        }
+                        result.push({
+                            [headersArr[0]]: currentSection, // 構面
+                            [headersArr[1]]: fields[1].replace(/^"|"$/g, ''), // 稽核發現
+                            [headersArr[2]]: fields[2].replace(/^"|"$/g, '').replace(/""/g, '"'), // 因應作為
+                            [headersArr[3]]: fields[3].replace(/^"|"$/g, '').replace(/^0/, ''), // 預定辦理時程 (移除日期前的0)
+                        });
+                    }
+                    buffer = []; // 清空緩衝區
+                }
+                // 如果引號是奇數，代表欄位尚未結束，繼續緩衝下一行
+            }
+            return result;
+        }
+
+        /**
+         * 顯示指定構面的卡片
+         * @param {Array<Object>} allData - 全部的資料
+         * @param {string} section - 要顯示的構面 ("策略面", "管理面", "技術面")
+         * @param {string} color - 卡片標頭的顏色 (Tailwind class)
+         */
+        function displayItems(allData, section, color) {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = ''; // 清空內容
+
+            // 篩選出指定構面的資料
+            const filteredData = allData.filter(item => item['構面'] === section);
+
+            // 建立卡片
+            filteredData.forEach(item => {
+                const card = `
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transition duration-300 ease-in-out hover:shadow-2xl">
+                        <!-- 卡片標頭 -->
+                        <div class="p-4 ${color} text-white">
+                            <h3 class="font-bold text-lg">稽核發現</h3>
+                        </div>
+                        <div class="p-5">
+                            <p class="text-gray-700 mb-4 h-24 overflow-y-auto">${item['稽核發現 (待改善事項)']}</p>
+                        </div>
+                        
+                        <!-- 分隔線 -->
+                        <hr class="mx-5">
+
+                        <!-- 卡片內容 -->
+                        <div class="p-5">
+                            <h4 class="font-semibold text-base text-gray-800 mb-2">因應作為</h4>
+                            <p class="card-content text-gray-600 text-sm mb-4 h-40 overflow-y-auto">${item['因應作為 (考量資安科2人人力)']}</p>
+                        </div>
+
+                        <!-- 卡片註腳 (辦理時程) -->
+                        <div class="bg-gray-50 px-5 py-3">
+                            <span class="text-sm font-medium text-blue-600 bg-blue-100 px-3 py-1 rounded-full inline-block">
+                                預定辦理時程：${item['預定辦理時程']}
+                            </span>
+                        </div>
+                    </div>
+                `;
+                contentArea.innerHTML += card;
+            });
+        }
+
+        /**
+         * 更新按鈕的啟用狀態
+         * @param {string} activeId - 目前啟用的按鈕ID
+         */
+        function updateButtonStyles(activeId) {
+            const buttons = document.querySelectorAll('.nav-button');
+            const colors = {
+                'btn-strategy': 'bg-blue-600',
+                'btn-management': 'bg-green-600',
+                'btn-technical': 'bg-red-600'
+            };
+            const hoverColors = {
+                'btn-strategy': 'hover:bg-blue-700',
+                'btn-management': 'hover:bg-green-700',
+                'btn-technical': 'hover:bg-red-700'
+            };
+
+            buttons.forEach(button => {
+                if (button.id === activeId) {
+                    // 啟用狀態
+                    button.classList.remove('bg-gray-500');
+                    button.classList.add(colors[activeId]);
+                    button.classList.add(hoverColors[activeId]);
+                } else {
+                    // 非啟用狀態
+                    button.classList.add('bg-gray-500');
+                    button.classList.remove('bg-blue-600', 'bg-green-600', 'bg-red-600');
+                    button.classList.remove('hover:bg-blue-700', 'hover:bg-green-700', 'hover:bg-red-700');
+                }
+            });
+        }
+
+        // 應用程式初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            const allData = parseCSV(csvData);
+
+            const btnStrategy = document.getElementById('btn-strategy');
+            const btnManagement = document.getElementById('btn-management');
+            const btnTechnical = document.getElementById('btn-technical');
+
+            btnStrategy.addEventListener('click', () => {
+                displayItems(allData, '策略面', 'bg-blue-600');
+                updateButtonStyles('btn-strategy');
+            });
+
+            btnManagement.addEventListener('click', () => {
+                displayItems(allData, '管理面', 'bg-green-600');
+                updateButtonStyles('btn-management');
+            });
+
+            btnTechnical.addEventListener('click', () => {
+                displayItems(allData, '技術面', 'bg-red-600');
+                updateButtonStyles('btn-technical');
+            });
+
+            // 預設載入「策略面」
+            btnStrategy.click();
+        });
+    </script>
+</body>
+</html>
